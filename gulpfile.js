@@ -6,6 +6,7 @@ var gulp = require('gulp'),
   autoprefixer = require('gulp-autoprefixer'),
   cleanCss = require('gulp-clean-css'),
   concatCss = require('gulp-concat-css'),
+  // uglify = require('gulp-uglifyjs'),
   rename = require('gulp-rename'),
   del = require('del'),
   cache = require('gulp-cache');
@@ -50,15 +51,21 @@ gulp.task('html', function () {
     }));
 });
 
+// gulp.task('js', function() {
+//   return gulp.src('src/js/**/*.js')
+//     .pipe(uglify('script.js'))
+//     .pipe(gulp.dest('src/js'))
+//     .pipe(browserSync.reload({
+//       stream: true
+//     }));
+// });
+
 gulp.task('prebuild', async function () {
 
   gulp.src('src/css/**/*.min.css')
     .pipe(gulp.dest('dist/css'));
 
-  gulp.src('src/fonts/**/*')
-    .pipe(gulp.dest('dist/fonts'));
-
-  gulp.src('src/js/**/*.min.js')
+  gulp.src('src/js/**/script.js')
     .pipe(gulp.dest('dist/js'));
 
   gulp.src('src/*.html')

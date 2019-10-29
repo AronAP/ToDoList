@@ -1,0 +1,154 @@
+.todo {
+
+  &__list {
+    margin-bottom: 6rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    // gap: 3rem;
+  }
+
+  &__item {
+    // flex: 0 1 calc((100% / 3) - 2rem);
+    width: calc((100% / 3) - 2rem);
+    margin-right: 3rem;
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 300px;
+    padding: 1rem;
+    border: 2px solid black;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), 0 3px 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    transition: .2s;
+
+    &:nth-child(3n) {
+      margin-right: 0;
+    }
+
+    &:hover {
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2), 0 3px 10px rgba(0, 0, 0, 0.2);
+      border-color: darken($theme-color, 15%);
+    }
+
+    &[data-done="true"] {
+      position: relative;
+      border-color: $done-color;
+      background-color: rgba($done-color, .1);
+
+      &::after {
+        content: '';
+        width: 16px;
+        height: 16px;
+        position: absolute;
+        top: -9px;
+        right: -2px;
+        background: white url(http://artemprydybailo.h1n.ru/cdn/checked16.png) top left no-repeat;
+      }
+    }
+  }
+
+  &__title,
+  &__descr {
+    margin-bottom: 2rem;
+  }
+
+  &__tags {
+    display: flex;
+    justify-content: space-between;
+    user-select: none;
+  }
+
+  &__priority {
+    padding: .3rem 1rem;
+    border: 2px dashed black;
+    border-radius: 10px;
+  }
+
+  &__menu {
+    position: relative;
+  }
+
+  .todo-menu {
+
+    &__dots {
+      padding: .3rem .5rem;
+      border: 2px solid $main-color;
+      border-radius: 10px;
+      color: $main-color;
+      transition: .2s;
+
+      &:hover {
+        cursor: pointer;
+        border-color: black;
+        color: black;
+      }
+
+      span {
+        overflow: hidden;
+        font-size: 1.5rem;
+        line-height: 0;
+        user-select: none;
+      }
+    }
+
+    &__items {
+      display: none;
+      position: absolute;
+      list-style: none;
+      text-align: center;
+      right: 0;
+      top: 50px;
+      z-index: 1;
+
+      &::before {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: $main-color;
+        border: 2px solid black;
+        transform: rotate(45deg);
+        z-index: -1;
+        top: -5px;
+        right: 8px;
+      }
+
+      &::after {
+        top: -20px;
+        border: 8px solid transparent;
+        border-bottom: 10px solid $theme-color;
+      }
+    }
+
+    &__item {
+      padding: .3rem 1.5rem;
+      border: 2px solid black;
+      border-bottom: none;
+      background-color: $main-color;
+
+      &:last-child {
+        border-bottom: 2px solid black;
+      }
+
+      &:hover {
+        background-color: $theme-color;
+        cursor: pointer;
+      }
+
+      &_done {
+
+        &:hover {
+          background-color: $done-color;
+        }
+      }
+
+      &_delete {
+        &:hover {
+          background-color: $warn-color;
+        }
+      }
+    }
+  }
+}

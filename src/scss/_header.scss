@@ -1,0 +1,11 @@
+.header {
+  width: 100%;
+  padding: 1rem;
+  border-bottom: 2px solid black;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  background-color: white;
+
+  &__name {
+    font-size: 1.5rem;
+  }
+}

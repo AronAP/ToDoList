@@ -1,0 +1,36 @@
+.todo-form {
+  margin-bottom: 3rem;
+
+  .form {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    &__search-block {
+      display: inline-block;
+      position: relative;
+      flex-basis: 35%;
+      min-width: 300px;
+
+      &::before {
+        content: '';
+        background: url(http://artemprydybailo.h1n.ru/cdn/search24.png) top left no-repeat;
+        display: inline-block;
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        top: 7px;
+        left: 7px;
+      }
+
+      &:hover::before {
+        background: url(http://artemprydybailo.h1n.ru/cdn/search24_a.png) top left no-repeat;
+      }
+    }
+
+    &__search {
+      padding: .3rem .5rem .3rem 3rem;
+    }
+  }
+}

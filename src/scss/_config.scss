@@ -1,0 +1,21 @@
+* {
+  font-family: 'Dosis', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 20px;
+  outline: none;
+
+  &::selection {
+    background: $theme-color;
+  }
+}
+
+.content {
+  padding: 2rem 0;
+}
+
+.container {
+  width: 1170px;
+  margin: 0 auto;
+}

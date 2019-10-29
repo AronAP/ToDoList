@@ -1,0 +1,12 @@
+.button {
+  padding: .3rem 1.5rem;
+  border: 01px solid black;
+  border-radius: 10px;
+  background-color: $main-color;
+
+  &:hover {
+    background-color: $theme-color;
+    border-color: darken($theme-color, 15%);
+    cursor: pointer;
+  }
+}

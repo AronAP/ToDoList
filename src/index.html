@@ -5,11 +5,163 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>ToDoList</title>
+
+  <title>TODOList</title>
+
+  <link rel="stylesheet" href="css/style.min.css">
+
+  <script src="js/index.js" defer></script>
 </head>
 
 <body>
-  
+
+  <header class="header">
+    <h1 class="header__name">TODOList</h1>
+  </header>
+
+  <div class="content">
+
+    <section class="todo-form">
+      <div class="container">
+
+        <form action="#" class="form">
+
+          <div class="form__search-block">
+            <input type="search" class="form__search input" placeholder="search by title">
+          </div>
+
+          <div class="select">
+            <select id="form__state">
+              <option value="all" selected>all</option>
+              <option value="open">open</option>
+              <option value="done">done</option>
+            </select>
+          </div>
+
+          <div class="select">
+            <select id="form__priority">
+              <option value="all" selected>all</option>
+              <option value="high">high</option>
+              <option value="normal">normal</option>
+              <option value="low">low</option>
+            </select>
+          </div>
+
+          <button class="form__button button">Create</button>
+
+        </form>
+
+      </div>
+    </section>
+
+    <section class="todo">
+      <div class="container">
+
+        <div class="todo__list">
+
+          <!-- 1 -->
+          <div class="todo__item" data-done="false">
+
+            <div class="todo__title">execute test task</div>
+            <div class="todo__descr">Ciklum internship</div>
+
+            <div class="todo__tags">
+
+              <div class="todo__priority">high</div>
+
+              <div class="todo__menu todo-menu">
+
+                <div class="todo-menu__dots"><span>...</span></div>
+
+                <ul class="todo-menu__items">
+                  <li class="todo-menu__item todo-menu__item_done">done</li>
+                  <li class="todo-menu__item todo-menu__item_edit">edit</li>
+                  <li class="todo-menu__item todo-menu__item_delete">delete</li>
+                </ul>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- 2 -->
+          <div class="todo__item" data-done="true">
+
+            <div class="todo__title">execute test task</div>
+            <div class="todo__descr">Ciklum internship</div>
+
+            <div class="todo__tags">
+
+              <div class="todo__priority">high</div>
+
+              <div class="todo__menu todo-menu">
+
+                <div class="todo-menu__dots"><span>...</span></div>
+
+                <ul class="todo-menu__items">
+                  <li class="todo-menu__item_done">done</li>
+                  <li class="todo-menu__item_edit">edit</li>
+                  <li class="todo-menu__item_delete">delete</li>
+                </ul>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+  <!-- /.content -->
+
+  <footer class="footer">
+    <h2 class="footer__name">
+      Artem Prydybailo
+    </h2>
+  </footer>
+
+  <!-- Modal Window -->
+  <section class="modal">
+
+    <div class="modal__overlay"></div>
+
+    <div class="modal__popup">
+
+      <form action="#" class="modal__form" id="modal-form">
+
+        <label for="modal-form__title">Title:</label>
+        <input type="text" id="modal-form__title" class="input" placeholder="Title">
+
+        <label for="modal-form__descr">Description:</label>
+        <textarea id="modal-form__descr" cols="30" rows="3" class="input" placeholder="Description"></textarea>
+
+
+        <label for="modal-form__priority">Priority:</label>
+        <div class="select">
+          <select id="modal-form__priority">
+            <option value="high" selected>high</option>
+            <option value="normal">normal</option>
+            <option value="low">low</option>
+          </select>
+        </div>
+
+
+        <div id="modal-form__button">
+          <button id="modal-form__cancel" class="button">Cancel</button>
+          <button id="modal-form__save" class="button">Save</button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </section>
+
 </body>
 
 </html>

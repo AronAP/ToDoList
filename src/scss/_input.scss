@@ -1,0 +1,9 @@
+.input {
+  border: 1px solid black;
+  padding: .3rem .5rem;
+  width: 100%;
+
+  &:hover {
+    border-color: darken($theme-color, 15%);
+  }
+}
