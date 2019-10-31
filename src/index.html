@@ -59,57 +59,7 @@
 
         <div class="todo__list">
 
-          <!-- 1 -->
-          <div class="todo__item" data-done="false">
-
-            <div class="todo__title">execute test task</div>
-            <div class="todo__descr">Ciklum internship</div>
-
-            <div class="todo__tags">
-
-              <div class="todo__priority">high</div>
-
-              <div class="todo__menu todo-menu">
-
-                <div class="todo-menu__dots"><span>...</span></div>
-
-                <ul class="todo-menu__items">
-                  <li class="todo-menu__item todo-menu__item_done">done</li>
-                  <li class="todo-menu__item todo-menu__item_edit">edit</li>
-                  <li class="todo-menu__item todo-menu__item_delete">delete</li>
-                </ul>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- 2 -->
-          <div class="todo__item" data-done="true">
-
-            <div class="todo__title">execute test task</div>
-            <div class="todo__descr">Ciklum internship</div>
-
-            <div class="todo__tags">
-
-              <div class="todo__priority">high</div>
-
-              <div class="todo__menu todo-menu">
-
-                <div class="todo-menu__dots"><span>...</span></div>
-
-                <ul class="todo-menu__items">
-                  <li class="todo-menu__item_done">done</li>
-                  <li class="todo-menu__item_edit">edit</li>
-                  <li class="todo-menu__item_delete">delete</li>
-                </ul>
-
-              </div>
-
-            </div>
-
-          </div>
+          <p class="todo__list_empty">the list is empty</p>
 
         </div>
 
@@ -140,7 +90,6 @@
         <label for="modal-form__descr">Description:</label>
         <textarea id="modal-form__descr" cols="30" rows="3" class="input" placeholder="Description"></textarea>
 
-
         <label for="modal-form__priority">Priority:</label>
         <div class="select">
           <select id="modal-form__priority">
@@ -149,7 +98,6 @@
             <option value="low">low</option>
           </select>
         </div>
-
 
         <div id="modal-form__button">
           <button id="modal-form__cancel" class="button">Cancel</button>
