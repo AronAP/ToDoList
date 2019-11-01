@@ -26,6 +26,10 @@
   margin: 0 auto;
 }
 
+mark {
+  background-color: #1abc9c;
+}
+
 .header {
   width: 100%;
   padding: 1rem;

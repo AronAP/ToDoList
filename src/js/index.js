@@ -1,3 +1,11 @@
+'use strict';
+
+sessionStorage.setItem('is_reloaded', true);
+
+const todoForm = document.querySelector('.todo-form');
+const inputSearch = document.querySelector('.form__search');
+const selectState = document.querySelector('#form__state');
+const selectPriority = document.querySelector('#form__priority');
 const createButton = document.querySelector('.form__button');
 const modal = document.querySelector('.modal');
 const modalOverlay = document.querySelector('.modal__overlay');
@@ -10,6 +18,7 @@ const modalFormPriority = modalForm.querySelector('#modal-form__priority');
 const todoList = document.querySelector('.todo__list');
 const todoListEmpty = document.querySelector('.todo__list_empty');
 
+let returnEditButtonID;
 let LIST, id;
 let data = localStorage.getItem('TODO');
 
@@ -103,36 +112,56 @@ function getModalValue() {
 
 saveButton.addEventListener('click', () => {
 
-  const modalValue = getModalValue();
+  if (saveButton.dataset.isedit == 'false') {
 
-  if (modalValue.title && modalValue.priority) {
+    const modalValue = getModalValue();
 
-    addTodoList(modalValue.title, modalValue.description, modalValue.priority, id, false, false);
+    if (modalValue.title && modalValue.priority) {
 
-    LIST.push({
-      title: modalValue.title,
-      description: modalValue.description,
-      priority: modalValue.priority,
-      id,
-      done: false,
-      trash: false
-    });
+      addTodoList(modalValue.title, modalValue.description, modalValue.priority, id, false, false);
 
-    id++;
+      LIST.push({
+        title: modalValue.title,
+        description: modalValue.description,
+        priority: modalValue.priority,
+        id,
+        done: false,
+        trash: false
+      });
 
-    modalFormTitle.value = '';
-    modalFormDescription.value = '';
-    modalFormPriority.value = 'high';
+      id += 1;
 
-    if (todoListEmpty) {
-      todoListEmpty.style.display = 'none';
+      modalFormTitle.value = '';
+      modalFormDescription.value = '';
+      modalFormPriority.value = 'high';
+      // говнокод
+      if (todoListEmpty) {
+        todoListEmpty.style.display = 'none';
+      }
+
+      closeModal();
+
+    }
+  } else {
+
+    let elem = returnEditButtonID();
+
+    editTodo(elem);
+
+    if (getSelectedOption('#form__priority') == 'high') {
+      filterPriority('high');
+    } else if (getSelectedOption('#form__priority') == 'normal') {
+      filterPriority('normal');
+    } else if (getSelectedOption('#form__priority') == 'low') {
+      filterPriority('low');
     }
 
+    saveButton.setAttribute('data-isedit', 'false');
+
     closeModal();
-
-    localStorage.setItem('TODO', JSON.stringify(LIST));
-
   }
+
+  localStorage.setItem('TODO', JSON.stringify(LIST));
 
 });
 
@@ -166,12 +195,28 @@ todoList.addEventListener('click', e => {
 
   if (nameClass.contains('todo-menu__item_done')) {
     completeTodo(elem);
+
+    if (getSelectedOption('#form__state') == 'done') {
+      filterState('false');
+    } else if (getSelectedOption('#form__state') == 'open') {
+      filterState('true');
+    }
+
   } else if (nameClass.contains('todo-menu__item_delete')) {
     removeTodo(elem);
   } else if (nameClass.contains('todo-menu__item_edit')) {
     getTodoValue(elem);
     openModal();
-    // editTodo(elem);
+
+    modalFormTitle.select();
+
+    saveButton.setAttribute('data-isedit', 'true');
+
+    returnEditButtonID = () => {
+      let elemEdit = elem;
+
+      return elemEdit;
+    };
   }
 
   localStorage.setItem('TODO', JSON.stringify(LIST));
@@ -188,16 +233,163 @@ function getTodoValue(elem) {
   modalFormPriority.value = priorityElem;
 }
 
-// function editTodo(elem) {
-// console.log(101);
+function editTodo(elem) {
 
-//   saveButton.addEventListener('click', () => {
-//     // LIST[elem.id].title = modalFormTitle.value;
+  let titleModal = modalFormTitle.value;
+  let descriptionModal = modalFormDescription.value;
+  let priorityModal = modalFormPriority.value;
 
+  LIST[elem.id].title = titleModal;
+  LIST[elem.id].description = descriptionModal;
+  LIST[elem.id].priority = priorityModal;
 
+  let editTitle = elem.parentNode.parentNode.parentNode.parentNode.querySelector('.todo__title');
+  let editDescription = elem.parentNode.parentNode.parentNode.parentNode.querySelector('.todo__descr');
+  let editPriority = elem.parentNode.parentNode.parentNode.parentNode.querySelector('.todo__priority');
 
-//     closeModal();
-//   });
+  editTitle.textContent = LIST[elem.id].title;
+  editDescription.textContent = LIST[elem.id].description;
+  editPriority.textContent = LIST[elem.id].priority;
 
+  localStorage.setItem('TODO', JSON.stringify(LIST));
 
+}
+
+// Search bt TITLE (only the first occurrence)
+function highlightingSearch(str, pos, len) {
+  return `${str.slice(0, pos)}<mark>${str.slice(pos, pos + len)}</mark>${str.slice(pos + len)}`;
+}
+
+inputSearch.addEventListener('focus', () => {
+  inputSearch.select();
+});
+
+inputSearch.addEventListener('input', () => {
+
+  const titleTodo = todoList.querySelectorAll('.todo__title');
+
+  let valInput = inputSearch.value.trim();
+
+  if (valInput != '') {
+
+    titleTodo.forEach(title => {
+      let titleText = title.textContent;
+      let search = titleText.search(valInput);
+
+      if (search == -1) {
+        title.parentNode.style.display = 'none';
+        title.innerHTML = title.innerText;
+      } else {
+        title.parentNode.style.display = 'block';
+
+        let str = title.innerText;
+
+        title.innerHTML = highlightingSearch(str, search, valInput.length);
+      }
+    });
+
+  } else {
+
+    titleTodo.forEach(title => {
+      title.parentNode.style.display = 'block';
+      title.innerHTML = title.innerText;
+    });
+
+  }
+});
+
+// function filterEmpty() {
 // }
+
+const itemTodo = todoList.querySelectorAll('.todo__item');
+
+function filterTodoAll() {
+
+  itemTodo.forEach(item => {
+
+    item.style.display = 'block';
+
+  });
+
+}
+
+function filterState(stateBool) {
+
+  itemTodo.forEach(item => {
+
+    item.style.display = 'block';
+
+    if (item.dataset.done == stateBool) {
+      item.style.display = 'none';
+    }
+
+  });
+
+}
+
+function getSelectedOption(selectElem) {
+
+  let sel = document.querySelector(selectElem).selectedIndex;
+  let options = document.querySelector(selectElem).options;
+
+  return options[sel].value;
+
+}
+
+selectState.addEventListener('change', () => {
+
+  let option = getSelectedOption('#form__state');
+
+  if (option == 'open') {
+    filterState('true');
+  } else if (option == 'done') {
+    filterState('false');
+  } else {
+    filterTodoAll();
+  }
+
+});
+
+function filterPriority(priorityText) {
+
+  itemTodo.forEach(item => {
+
+    item.style.display = 'block';
+
+    const priorityElemText = item.querySelector('.todo__priority').textContent;
+
+    if (priorityElemText != priorityText) {
+      item.style.display = 'none';
+    }
+
+  });
+
+}
+
+selectPriority.addEventListener('change', () => {
+
+  let option = getSelectedOption('#form__priority');
+
+  if (option == 'high') {
+    filterPriority('high');
+  } else if (option == 'normal') {
+    filterPriority('normal');
+  } else if (option == 'low') {
+    filterPriority('low');
+  } else {
+    filterTodoAll();
+  }
+
+});
+
+// reset select for FireFox
+if (sessionStorage.getItem('is_reloaded')) {
+
+  const selectAll = todoForm.querySelectorAll('select');
+
+  for (let i = 0; i < selectAll.length; i += 1) {
+    let select = selectAll[i];
+
+    select.value = 'all';
+  }
+}
