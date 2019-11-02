@@ -39,7 +39,7 @@ if (getListLength() == 0) {
 
 function loadList(array) {
   array.forEach(item => {
-    addTodoList(item.title, item.description, item.priority, item.id, item.done, item.trash);
+    addTodoList(item.id, item.done, item.title, item.description, item.priority);
   });
 }
 
@@ -65,17 +65,15 @@ createButton.addEventListener('click', () => {
 
 cancelButton.addEventListener('click', () => {
   closeModal();
+  removeModalValue();
 });
 
 modalOverlay.addEventListener('click', () => {
   closeModal();
+  removeModalValue();
 });
 
-function addTodoList(title, description, priority, id, done, trash) {
-
-  if (trash) {
-    return;
-  }
+function addTodoList(id, done, title, description, priority) {
 
   const item = `<div class="todo__item" data-done="${done}">
                   <div class="todo__title">${title}</div>
@@ -110,6 +108,12 @@ function getModalValue() {
   };
 }
 
+function removeModalValue() {
+  modalFormTitle.value = '';
+  modalFormDescription.value = '';
+  modalFormPriority.value = 'high';
+}
+
 saveButton.addEventListener('click', () => {
 
   if (saveButton.dataset.isedit == 'false') {
@@ -118,22 +122,34 @@ saveButton.addEventListener('click', () => {
 
     if (modalValue.title && modalValue.priority) {
 
-      addTodoList(modalValue.title, modalValue.description, modalValue.priority, id, false, false);
+      addTodoList(id, false, modalValue.title, modalValue.description, modalValue.priority);
 
       LIST.push({
+        id,
+        done: false,
         title: modalValue.title,
         description: modalValue.description,
         priority: modalValue.priority,
-        id,
-        done: false,
-        trash: false
       });
 
       id += 1;
 
-      modalFormTitle.value = '';
-      modalFormDescription.value = '';
-      modalFormPriority.value = 'high';
+      if (getSelectedOption('#form__state') == 'done') {
+        filterState('false');
+      } else if (getSelectedOption('#form__state') == 'open') {
+        filterState('true');
+      }
+
+      if (getSelectedOption('#form__priority') == 'high') {
+        filterPriority('high');
+      } else if (getSelectedOption('#form__priority') == 'normal') {
+        filterPriority('normal');
+      } else if (getSelectedOption('#form__priority') == 'low') {
+        filterPriority('low');
+      }
+
+      removeModalValue();
+
       // говнокод
       if (todoListEmpty) {
         todoListEmpty.style.display = 'none';
@@ -158,6 +174,7 @@ saveButton.addEventListener('click', () => {
 
     saveButton.setAttribute('data-isedit', 'false');
 
+    removeModalValue();
     closeModal();
   }
 
@@ -180,8 +197,6 @@ function completeTodo(elem) {
 
 function removeTodo(elem) {
   elem.parentNode.parentNode.parentNode.parentNode.remove();
-
-  LIST[elem.id].trash = true;
 
   if (getListLength() == 0) {
     todoListEmpty.style.display = 'block';
@@ -301,9 +316,8 @@ inputSearch.addEventListener('input', () => {
 // function filterEmpty() {
 // }
 
-const itemTodo = todoList.querySelectorAll('.todo__item');
-
 function filterTodoAll() {
+  const itemTodo = todoList.querySelectorAll('.todo__item');
 
   itemTodo.forEach(item => {
 
@@ -314,6 +328,7 @@ function filterTodoAll() {
 }
 
 function filterState(stateBool) {
+  const itemTodo = todoList.querySelectorAll('.todo__item');
 
   itemTodo.forEach(item => {
 
@@ -351,6 +366,7 @@ selectState.addEventListener('change', () => {
 });
 
 function filterPriority(priorityText) {
+  const itemTodo = todoList.querySelectorAll('.todo__item');
 
   itemTodo.forEach(item => {
 
