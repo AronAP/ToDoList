@@ -39,7 +39,7 @@ if (getListLength() == 0) {
 
 function loadList(array) {
   array.forEach(item => {
-    addTodoList(item.id, item.done, item.title, item.description, item.priority);
+    addTodoList(item.id, item.done, item.trash, item.title, item.description, item.priority);
   });
 }
 
@@ -73,9 +73,13 @@ modalOverlay.addEventListener('click', () => {
   removeModalValue();
 });
 
-function addTodoList(id, done, title, description, priority) {
+function addTodoList(id, done, trash, title, description, priority) {
 
-  const item = `<div class="todo__item" data-done="${done}">
+  if (trash) {
+    return;
+  }
+
+  const item = `<div class="todo__item" data-done="${done}" data-filtered="false" data-search="false" data-search-now="true" style="display: block;">
                   <div class="todo__title">${title}</div>
                   <div class="todo__descr">${description}</div>
                   <div class="todo__tags">
@@ -97,13 +101,13 @@ function addTodoList(id, done, title, description, priority) {
 }
 
 function getModalValue() {
-  const titleValue = modalFormTitle.value;
-  const DescriptionValue = modalFormDescription.value;
+  const titleValue = modalFormTitle.value.toLowerCase();
+  const descriptionValue = modalFormDescription.value.toLowerCase();
   const PriorityValue = modalFormPriority.value;
 
   return {
     title: titleValue,
-    description: DescriptionValue,
+    description: descriptionValue,
     priority: PriorityValue
   };
 }
@@ -122,11 +126,12 @@ saveButton.addEventListener('click', () => {
 
     if (modalValue.title && modalValue.priority) {
 
-      addTodoList(id, false, modalValue.title, modalValue.description, modalValue.priority);
+      addTodoList(id, false, false, modalValue.title, modalValue.description, modalValue.priority);
 
       LIST.push({
         id,
         done: false,
+        trash: false,
         title: modalValue.title,
         description: modalValue.description,
         priority: modalValue.priority,
@@ -158,6 +163,7 @@ saveButton.addEventListener('click', () => {
       closeModal();
 
     }
+
   } else {
 
     let elem = returnEditButtonID();
@@ -197,6 +203,8 @@ function completeTodo(elem) {
 
 function removeTodo(elem) {
   elem.parentNode.parentNode.parentNode.parentNode.remove();
+
+  LIST[elem.id].trash = true;
 
   if (getListLength() == 0) {
     todoListEmpty.style.display = 'block';
@@ -270,58 +278,29 @@ function editTodo(elem) {
 
 }
 
-// Search bt TITLE (only the first occurrence)
-function highlightingSearch(str, pos, len) {
-  return `${str.slice(0, pos)}<mark>${str.slice(pos, pos + len)}</mark>${str.slice(pos + len)}`;
+function isDisplayNone() {
+  const itemTodo = todoList.querySelectorAll('.todo__item');
+
+  itemTodo.forEach(item => {
+    if (item.style.display == 'none') {
+      item.setAttribute('data-filtered', 'false');
+    }
+  });
 }
-
-inputSearch.addEventListener('focus', () => {
-  inputSearch.select();
-});
-
-inputSearch.addEventListener('input', () => {
-
-  const titleTodo = todoList.querySelectorAll('.todo__title');
-
-  let valInput = inputSearch.value.trim();
-
-  if (valInput != '') {
-
-    titleTodo.forEach(title => {
-      let titleText = title.textContent;
-      let search = titleText.search(valInput);
-
-      if (search == -1) {
-        title.parentNode.style.display = 'none';
-        title.innerHTML = title.innerText;
-      } else {
-        title.parentNode.style.display = 'block';
-
-        let str = title.innerText;
-
-        title.innerHTML = highlightingSearch(str, search, valInput.length);
-      }
-    });
-
-  } else {
-
-    titleTodo.forEach(title => {
-      title.parentNode.style.display = 'block';
-      title.innerHTML = title.innerText;
-    });
-
-  }
-});
-
-// function filterEmpty() {
-// }
 
 function filterTodoAll() {
   const itemTodo = todoList.querySelectorAll('.todo__item');
 
   itemTodo.forEach(item => {
 
-    item.style.display = 'block';
+    if (item.getAttribute('data-search-now') == 'true') {
+
+      item.style.display = 'block';
+      item.setAttribute('data-filtered', 'false');
+
+    } else {
+      item.style.display = 'none';
+    }
 
   });
 
@@ -332,9 +311,39 @@ function filterState(stateBool) {
 
   itemTodo.forEach(item => {
 
-    item.style.display = 'block';
+    if (item.getAttribute('data-search-now') == 'true') {
 
-    if (item.dataset.done == stateBool) {
+      if (item.dataset.done == stateBool) {
+        item.style.display = 'none';
+      } else {
+        item.setAttribute('data-filtered', 'true');
+      }
+
+    } else {
+      item.style.display = 'none';
+    }
+
+  });
+
+}
+
+
+function filterPriority(priorityText) {
+  const itemTodo = todoList.querySelectorAll('.todo__item');
+
+  itemTodo.forEach(item => {
+
+    if (item.getAttribute('data-search-now') == 'true') {
+
+      const priorityElemText = item.querySelector('.todo__priority').textContent;
+
+      if (priorityElemText != priorityText) {
+        item.style.display = 'none';
+      } else {
+        item.setAttribute('data-filtered', 'true');
+      }
+
+    } else {
       item.style.display = 'none';
     }
 
@@ -353,49 +362,96 @@ function getSelectedOption(selectElem) {
 
 selectState.addEventListener('change', () => {
 
-  let option = getSelectedOption('#form__state');
+  let optionState = getSelectedOption('#form__state');
+  let optionPriority = getSelectedOption('#form__priority');
 
-  if (option == 'open') {
-    filterState('true');
-  } else if (option == 'done') {
-    filterState('false');
-  } else {
+
+  if (optionState == 'open') {
     filterTodoAll();
-  }
+    filterState('true');
 
-});
-
-function filterPriority(priorityText) {
-  const itemTodo = todoList.querySelectorAll('.todo__item');
-
-  itemTodo.forEach(item => {
-
-    item.style.display = 'block';
-
-    const priorityElemText = item.querySelector('.todo__priority').textContent;
-
-    if (priorityElemText != priorityText) {
-      item.style.display = 'none';
+    if (optionPriority == 'high') {
+      filterPriority('high');
+    } else if (optionPriority == 'normal') {
+      filterPriority('normal');
+    } else if (optionPriority == 'low') {
+      filterPriority('low');
     }
 
-  });
+  } else if (optionState == 'done') {
+    filterTodoAll();
+    filterState('false');
 
-}
+    if (optionPriority == 'high') {
+      filterPriority('high');
+    } else if (optionPriority == 'normal') {
+      filterPriority('normal');
+    } else if (optionPriority == 'low') {
+      filterPriority('low');
+    }
+
+  } else {
+    filterTodoAll();
+
+    if (optionPriority == 'high') {
+      filterPriority('high');
+    } else if (optionPriority == 'normal') {
+      filterPriority('normal');
+    } else if (optionPriority == 'low') {
+      filterPriority('low');
+    }
+
+  }
+
+  isDisplayNone();
+});
 
 selectPriority.addEventListener('change', () => {
 
-  let option = getSelectedOption('#form__priority');
+  let optionPriority = getSelectedOption('#form__priority');
+  let optionState = getSelectedOption('#form__state');
 
-  if (option == 'high') {
+  if (optionPriority == 'high') {
+    filterTodoAll();
     filterPriority('high');
-  } else if (option == 'normal') {
+
+    if (optionState == 'done') {
+      filterState('false');
+    } else if (optionState == 'open') {
+      filterState('true');
+    }
+
+  } else if (optionPriority == 'normal') {
+    filterTodoAll();
     filterPriority('normal');
-  } else if (option == 'low') {
+
+    if (optionState == 'done') {
+      filterState('false');
+    } else if (optionState == 'open') {
+      filterState('true');
+    }
+
+  } else if (optionPriority == 'low') {
+    filterTodoAll();
     filterPriority('low');
+
+    if (optionState == 'done') {
+      filterState('false');
+    } else if (optionState == 'open') {
+      filterState('true');
+    }
+
   } else {
     filterTodoAll();
+
+    if (optionState == 'done') {
+      filterState('false');
+    } else if (optionState == 'open') {
+      filterState('true');
+    }
   }
 
+  isDisplayNone();
 });
 
 // reset select for FireFox
@@ -408,4 +464,121 @@ if (sessionStorage.getItem('is_reloaded')) {
 
     select.value = 'all';
   }
+
+  const inputAll = todoForm.querySelectorAll('input');
+
+  for (let i = 0; i < inputAll.length; i += 1) {
+    let select = inputAll[i];
+
+    select.value = '';
+  }
 }
+
+// Search by TITLE
+
+function onBlur() {
+  const titleTodo = todoList.querySelectorAll('.todo__title');
+
+  titleTodo.forEach(title => {
+    title.parentNode.setAttribute('data-search', 'false');
+  });
+}
+onBlur();
+
+function highlightingSearch(str, pos, len) {
+  return `${str.slice(0, pos)}<mark>${str.slice(pos, pos + len)}</mark>${str.slice(pos + len)}`;
+}
+
+inputSearch.addEventListener('focus', () => {
+  inputSearch.select();
+
+  const titleTodo = todoList.querySelectorAll('.todo__title');
+
+  titleTodo.forEach(title => {
+
+    if (title.parentNode.style.display == 'block') {
+      title.parentNode.setAttribute('data-search', 'true');
+      title.parentNode.setAttribute('data-search-now', 'true');
+    } else {
+      title.parentNode.setAttribute('data-search', 'false');
+      title.parentNode.setAttribute('data-search-now', 'false');
+    }
+
+  });
+});
+
+inputSearch.addEventListener('input', () => {
+
+  const titleTodo = todoList.querySelectorAll('.todo__title');
+
+  let valInput = inputSearch.value.trim();
+
+  if (valInput != '') {
+
+    titleTodo.forEach(title => {
+      let titleText = title.textContent;
+      let search = titleText.search(valInput);
+
+      if (search == -1) {
+        title.parentNode.setAttribute('data-search-now', 'false');
+        title.parentNode.style.display = 'none';
+        title.innerHTML = title.innerText;
+      } else {
+
+        if (title.parentNode.dataset.search == 'true') {
+          let str = title.innerText;
+
+          title.innerHTML = highlightingSearch(str, search, valInput.length);
+        }
+
+        if (title.parentNode.style.display == 'none' && title.parentNode.dataset.search == 'true') {
+          title.parentNode.style.display = 'block';
+          title.parentNode.setAttribute('data-search-now', 'true');
+
+        }
+      }
+    });
+
+  } else {
+
+    titleTodo.forEach(title => {
+
+      if (getSelectedOption('#form__state') == 'done') {
+        filterState('false');
+      } else if (getSelectedOption('#form__state') == 'open') {
+        filterState('true');
+      }
+
+      if (getSelectedOption('#form__priority') == 'high') {
+        filterPriority('high');
+      } else if (getSelectedOption('#form__priority') == 'normal') {
+        filterPriority('normal');
+      } else if (getSelectedOption('#form__priority') == 'low') {
+        filterPriority('low');
+      }
+
+      if (title.parentNode.getAttribute('data-filtered') == 'true') {
+        console.log('filtered');
+
+        title.parentNode.style.display = 'block';
+      }
+
+      if (title.parentNode.style.display == 'none') {
+        console.log(1901);
+
+        title.parentNode.setAttribute('data-search', 'false');
+        title.parentNode.style.display = 'block';
+      }
+
+      title.parentNode.setAttribute('data-search', 'false');
+      title.parentNode.setAttribute('data-search-now', 'true');
+
+      if (document.activeElement == inputSearch) {
+        title.parentNode.setAttribute('data-search', 'true');
+        title.parentNode.setAttribute('data-search-now', 'true');
+      }
+
+      title.innerHTML = title.innerText;
+    });
+  }
+});
