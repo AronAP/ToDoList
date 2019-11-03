@@ -40,12 +40,9 @@ And so, now you have one task.  You can *complete*, *edit* and *delete* it.
 To do this, click on three points. A submenu will open:
 
 - the **DONE** button *executes* or *cancels* a task.
-![done button][6]
-![done card][7]
+![done button][6]![done card][7]
 - the **EDIT** button allows you to fix the task.  When clicked, a modal window opens in which you can *change* all the data and then save **SAVE**.
-![edit button][8]
-![edit modal][9]
-![edited card][10]
+![edit button][8]![edit modal][9]![edited card][10]
 - the **DELETE** button *deletes* the task.
 ![delete button][11]
 ![empty][12]
