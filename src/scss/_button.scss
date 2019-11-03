@@ -1,12 +1,31 @@
 .button {
   padding: .3rem 1.5rem;
-  border: 01px solid black;
+  border: 1px solid black;
   border-radius: 10px;
   background-color: $main-color;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
     background-color: $theme-color;
     border-color: darken($theme-color, 15%);
     cursor: pointer;
+  }
+
+  & .circle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: #fff;
+    width: 100px;
+    height: 100px;
+    transform: translate(-50%, -50%) scale(0);
+    animation: scale 0.5s ease-out;
+  }
+
+  @keyframes scale {
+    to {
+      transform: translate(-50%, -50%) scale(3);
+      opacity: 0;
+    }
   }
 }

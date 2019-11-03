@@ -17,6 +17,8 @@ const modalFormDescription = modalForm.querySelector('#modal-form__descr');
 const modalFormPriority = modalForm.querySelector('#modal-form__priority');
 const todoList = document.querySelector('.todo__list');
 const todoListEmpty = document.querySelector('.todo__list_empty');
+const headerName = document.querySelector('.header__name');
+const titleError = document.querySelector('#modal-form__error');
 
 let returnEditButtonID;
 let LIST, id;
@@ -43,6 +45,11 @@ function loadList(array) {
   });
 }
 
+headerName.addEventListener('click', () => {
+  localStorage.clear();
+  location.reload();
+});
+
 function getListLength() {
   const item = todoList.querySelectorAll('.todo__item');
 
@@ -51,12 +58,15 @@ function getListLength() {
 
 function openModal() {
   modal.style.display = 'block';
-  document.body.style.overflowY = 'hidden';
 }
 
 function closeModal() {
   modal.style.display = 'none';
-  document.body.style.overflowY = '';
+}
+
+function removeInputError() {
+  modalFormTitle.style.borderColor = '#000';
+  titleError.style.display = 'none';
 }
 
 createButton.addEventListener('click', () => {
@@ -66,12 +76,49 @@ createButton.addEventListener('click', () => {
 cancelButton.addEventListener('click', () => {
   closeModal();
   removeModalValue();
+  removeInputError();
 });
 
 modalOverlay.addEventListener('click', () => {
   closeModal();
   removeModalValue();
+  removeInputError();
 });
+
+function openMore(elem) {
+  elem = elem.nextSibling.nextSibling;
+  elem.style.display = 'block';
+}
+
+function closeMore(elem) {
+  elem = elem.parentNode;
+  elem.style.display = 'none';
+}
+
+function listenDotsButton() {
+  const dotsButton = document.querySelectorAll('.todo-menu__dots');
+
+  dotsButton.forEach(btn => {
+
+    btn.addEventListener('click', e => {
+
+      let button = e.target.closest('div');
+
+      if (!button) return;
+      if (!btn.contains(button)) return console.log(2);
+
+      openMore(btn);
+
+      setTimeout(() => {
+        btn.nextSibling.nextSibling.style.display = 'none';
+      }, 2000);
+
+    });
+
+  });
+}
+
+listenDotsButton();
 
 function addTodoList(id, done, trash, title, description, priority) {
 
@@ -79,7 +126,7 @@ function addTodoList(id, done, trash, title, description, priority) {
     return;
   }
 
-  const item = `<div class="todo__item" data-done="${done}" data-filtered="false" data-search="false" data-search-now="true" style="display: block;">
+  const item = `<div class="todo__item" data-done="${done}" data-filtered="false" data-search="false" data-search-now="true" style="display: flex;">
                   <div class="todo__title">${title}</div>
                   <div class="todo__descr">${description}</div>
                   <div class="todo__tags">
@@ -122,6 +169,8 @@ saveButton.addEventListener('click', () => {
 
   if (saveButton.dataset.isedit == 'false') {
 
+    removeInputError();
+
     const modalValue = getModalValue();
 
     if (modalValue.title && modalValue.priority) {
@@ -162,6 +211,9 @@ saveButton.addEventListener('click', () => {
 
       closeModal();
 
+    } else {
+      modalFormTitle.style.borderColor = '#e74c3c';
+      titleError.style.display = 'block';
     }
 
   } else {
@@ -183,6 +235,8 @@ saveButton.addEventListener('click', () => {
     removeModalValue();
     closeModal();
   }
+
+  listenDotsButton();
 
   localStorage.setItem('TODO', JSON.stringify(LIST));
 
@@ -217,6 +271,7 @@ todoList.addEventListener('click', e => {
   let nameClass = elem.classList;
 
   if (nameClass.contains('todo-menu__item_done')) {
+    closeMore(elem);
     completeTodo(elem);
 
     if (getSelectedOption('#form__state') == 'done') {
@@ -226,9 +281,11 @@ todoList.addEventListener('click', e => {
     }
 
   } else if (nameClass.contains('todo-menu__item_delete')) {
+    closeMore(elem);
     removeTodo(elem);
   } else if (nameClass.contains('todo-menu__item_edit')) {
     getTodoValue(elem);
+    closeMore(elem);
     openModal();
 
     modalFormTitle.select();
@@ -240,6 +297,7 @@ todoList.addEventListener('click', e => {
 
       return elemEdit;
     };
+
   }
 
   localStorage.setItem('TODO', JSON.stringify(LIST));
@@ -295,7 +353,7 @@ function filterTodoAll() {
 
     if (item.getAttribute('data-search-now') == 'true') {
 
-      item.style.display = 'block';
+      item.style.display = 'flex';
       item.setAttribute('data-filtered', 'false');
 
     } else {
@@ -496,7 +554,7 @@ inputSearch.addEventListener('focus', () => {
 
   titleTodo.forEach(title => {
 
-    if (title.parentNode.style.display == 'block') {
+    if (title.parentNode.style.display == 'flex') {
       title.parentNode.setAttribute('data-search', 'true');
       title.parentNode.setAttribute('data-search-now', 'true');
     } else {
@@ -532,7 +590,7 @@ inputSearch.addEventListener('input', () => {
         }
 
         if (title.parentNode.style.display == 'none' && title.parentNode.dataset.search == 'true') {
-          title.parentNode.style.display = 'block';
+          title.parentNode.style.display = 'flex';
           title.parentNode.setAttribute('data-search-now', 'true');
 
         }
@@ -560,14 +618,14 @@ inputSearch.addEventListener('input', () => {
       if (title.parentNode.getAttribute('data-filtered') == 'true') {
         console.log('filtered');
 
-        title.parentNode.style.display = 'block';
+        title.parentNode.style.display = 'flex';
       }
 
       if (title.parentNode.style.display == 'none') {
         console.log(1901);
 
         title.parentNode.setAttribute('data-search', 'false');
-        title.parentNode.style.display = 'block';
+        title.parentNode.style.display = 'flex';
       }
 
       title.parentNode.setAttribute('data-search', 'false');
@@ -581,4 +639,33 @@ inputSearch.addEventListener('input', () => {
       title.innerHTML = title.innerText;
     });
   }
+});
+
+// Button Effect
+const buttons = document.querySelectorAll('.button');
+
+buttons.forEach(button => {
+  button.addEventListener('click', function (e) {
+
+    let x = e.clientX;
+    let y = e.clientY;
+
+    let buttonTop = e.target.offsetTop;
+    let buttonLeft = e.target.offsetLeft;
+
+    let xInside = x - buttonLeft;
+    let yInside = y - buttonTop;
+
+    let circle = document.createElement('span');
+
+    circle.classList.add('circle');
+    circle.style.top = yInside + 'px';
+    circle.style.left = xInside + 'px';
+
+    this.appendChild(circle);
+
+    setTimeout(() => {
+      circle.remove();
+    }, 500);
+  });
 });

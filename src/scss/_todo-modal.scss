@@ -37,6 +37,12 @@
       padding: .5rem 0;
     }
 
+    &__error {
+      display: none;
+      font-size: 0.7rem;
+      color: $warn-color;
+    }
+
     &__descr {
       resize: none;
     }

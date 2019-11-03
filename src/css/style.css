@@ -31,6 +31,10 @@ mark {
 }
 
 .header {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
   width: 100%;
   padding: 1rem;
   border-bottom: 2px solid black;
@@ -41,6 +45,10 @@ mark {
 
 .header__name {
   font-size: 1.5rem;
+}
+
+.header__name:hover {
+  cursor: pointer;
 }
 
 .footer {
@@ -133,8 +141,7 @@ mark {
 .todo__item {
   width: -webkit-calc((100% / 3) - 2rem);
   width: calc((100% / 3) - 2rem);
-  margin-right: 3rem;
-  margin-bottom: 3rem;
+  margin: 1rem;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -154,10 +161,6 @@ mark {
   -webkit-box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), 0 3px 10px rgba(0, 0, 0, 0.1);
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1), 0 3px 10px rgba(0, 0, 0, 0.1);
   background-color: white;
-}
-
-.todo__item:nth-child(3n) {
-  margin-right: 0;
 }
 
 .todo__item:hover {
@@ -239,6 +242,7 @@ mark {
 }
 
 .todo .todo-menu__items {
+  display: none;
   position: absolute;
   list-style: none;
   text-align: center;
@@ -340,6 +344,12 @@ mark {
 
 .modal #modal-form label {
   padding: .5rem 0;
+}
+
+.modal #modal-form__error {
+  display: none;
+  font-size: 0.7rem;
+  color: #e74c3c;
 }
 
 .modal #modal-form__descr {
@@ -475,13 +485,44 @@ mark {
 
 .button {
   padding: .3rem 1.5rem;
-  border: 01px solid black;
+  border: 1px solid black;
   border-radius: 10px;
   background-color: #bdc3c7;
+  position: relative;
+  overflow: hidden;
 }
 
 .button:hover {
   background-color: #1abc9c;
   border-color: #117964;
   cursor: pointer;
+}
+
+.button .circle {
+  position: absolute;
+  border-radius: 50%;
+  background-color: #fff;
+  width: 100px;
+  height: 100px;
+  -webkit-transform: translate(-50%, -50%) scale(0);
+  -ms-transform: translate(-50%, -50%) scale(0);
+  transform: translate(-50%, -50%) scale(0);
+  -webkit-animation: scale 0.5s ease-out;
+  animation: scale 0.5s ease-out;
+}
+
+@-webkit-keyframes scale {
+  to {
+    -webkit-transform: translate(-50%, -50%) scale(3);
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
+}
+
+@keyframes scale {
+  to {
+    -webkit-transform: translate(-50%, -50%) scale(3);
+    transform: translate(-50%, -50%) scale(3);
+    opacity: 0;
+  }
 }
