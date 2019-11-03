@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <title>TODOList</title>
+
+  <link rel="stylesheet" href="css/style.min.css">
+
+  <script src="js/index.js" defer></script>
+</head>
+
+<body>
+
+  <header class="header">
+    <h1 class="header__name">TODOList</h1>
+  </header>
+
+  <div class="content">
+
+    <section class="todo-form">
+      <div class="container">
+
+        <div class="form">
+
+          <div class="form__search-block">
+            <input type="search" class="form__search input" placeholder="search by title" onBlur="onBlur()">
+          </div>
+
+          <div class="select">
+            <select id="form__state">
+              <option value="all" selected>all</option>
+              <option value="open">open</option>
+              <option value="done">done</option>
+            </select>
+          </div>
+
+          <div class="select">
+            <select id="form__priority">
+              <option value="all" selected>all</option>
+              <option value="high">high</option>
+              <option value="normal">normal</option>
+              <option value="low">low</option>
+            </select>
+          </div>
+
+          <button class="form__button button">Create</button>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section class="todo">
+      <div class="container">
+
+        <div class="todo__list">
+
+          <p class="todo__list_empty">the list is empty</p>
+
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+  <!-- /.content -->
+
+  <footer class="footer">
+    <h2 class="footer__name">
+      Artem Prydybailo
+    </h2>
+  </footer>
+
+  <!-- Modal Window -->
+  <section class="modal">
+
+    <div class="modal__overlay"></div>
+
+    <div class="modal__popup">
+
+      <form action="#" class="modal__form" id="modal-form">
+
+        <label for="modal-form__title">Title:</label>
+        <input type="text" id="modal-form__title" class="input" placeholder="Title">
+        <span id="modal-form__error">Please, fill in the field</span>
+
+        <label for="modal-form__descr">Description:</label>
+        <textarea id="modal-form__descr" cols="30" rows="3" class="input" placeholder="Description"></textarea>
+
+        <label for="modal-form__priority">Priority:</label>
+        <div class="select">
+          <select id="modal-form__priority">
+            <option value="high" selected>high</option>
+            <option value="normal">normal</option>
+            <option value="low">low</option>
+          </select>
+        </div>
+
+        <div id="modal-form__button">
+          <button id="modal-form__cancel" class="button">Cancel</button>
+          <button id="modal-form__save" class="button" data-isedit="false">Save</button>
+        </div>
+
+      </form>
+
+    </div>
+
+  </section>
+
+</body>
+
+</html>
