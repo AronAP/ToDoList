@@ -1,11 +1,11 @@
-# [ToDoList](/dist) #
+# [ToDoList](https://aronap.github.io/ToDoList/dist/) #
 
 > Gee, what is this?
 >  
 > You don't know?
 > This is the best task manager, developed by **AronAP**.
 >  
-> YOU CAN FIND THE APPLICATION [HERE](/dist)!!!!!
+> YOU CAN FIND THE APPLICATION [HERE](https://aronap.github.io/ToDoList/dist/)!!!!!
 
 ![main screen][1]
 
